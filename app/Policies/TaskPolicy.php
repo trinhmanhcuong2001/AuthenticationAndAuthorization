@@ -20,29 +20,14 @@ class TaskPolicy
         return true;
     }
 
-    public function create(User $user)
-    {
-        return true;
-    }
-
-    public function store(User $user)
-    {
-        return true;
-    }
 
     public function edit(User $user, Task $task)
     {
-        return true;
+        return $user->role == 'admin' || ($user->role == 'editor' && $user->id == $task->user_id);
     }
 
     public function update(User $user, Task $task)
     {
-        return true;
-    }
-
-
-    public function delete(User $user, Task $task)
-    {
-        return true;
+        return $user->role == 'admin' || ($user->role == 'editor' && $user->id == $task->user_id);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class TaskController extends Controller
 {
@@ -21,13 +22,18 @@ class TaskController extends Controller
 
     public function create()
     {
-        $this->authorize('create', Task::class);
+        if (Gate::denies('view-create-task')) {
+            abort(403, 'Unauthorized');
+        }
         return view('tasks.create');
     }
 
     public function store(Request $request)
     {
-        $this->authorize('store', Task::class);
+        if (Gate::denies('create-task')) {
+            abort(403, 'Unauthorized');
+        }
+
         $data = $request->all();
 
         $data['user_id'] = Auth::id();
@@ -59,7 +65,9 @@ class TaskController extends Controller
 
     public function destroy(Task $task)
     {
-        $this->authorize('delete', $task);
+        if (Gate::denies('delete-task', $task)) {
+            abort(403, 'Unauthorized');
+        }
 
         $task->delete();
         session()->flash('success', 'Xóa công việc thành công!');
