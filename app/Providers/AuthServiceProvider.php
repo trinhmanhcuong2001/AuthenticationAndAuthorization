@@ -7,6 +7,7 @@ namespace App\Providers;
 use App\Models\Task;
 use App\Policies\TaskPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -25,5 +26,9 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
+
+        Gate::define('is-admin', function ($user) {
+            return $user->role == 'admin';
+        });
     }
 }

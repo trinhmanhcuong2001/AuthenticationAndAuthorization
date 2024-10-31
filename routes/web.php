@@ -29,11 +29,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get("/tasks", [TaskController::class, 'index'])->name('task.index');
-Route::get('/tasks/create', [TaskController::class, 'create'])->name('task.create');
-Route::post('/tasks/create', [TaskController::class, 'store'])->name('task.store');
-Route::get('/tasks/update/{task}', [TaskController::class, 'edit'])->name('task.edit');
-Route::put('/tasks/update/{task}', [TaskController::class, 'update'])->name('task.update');
-Route::delete('/task/delete/{task}', [TaskController::class, 'destroy'])->name('task.destroy');
+Route::middleware(['role:admin'])->group(function () {
+    Route::get("/tasks", [TaskController::class, 'index'])->name('task.index');
+    Route::get('/tasks/create', [TaskController::class, 'create'])->name('task.create');
+    Route::post('/tasks/create', [TaskController::class, 'store'])->name('task.store');
+    Route::get('/tasks/update/{task}', [TaskController::class, 'edit'])->name('task.edit');
+    Route::put('/tasks/update/{task}', [TaskController::class, 'update'])->name('task.update');
+    Route::delete('/task/delete/{task}', [TaskController::class, 'destroy'])->name('task.destroy');
+});
 
 require __DIR__ . '/auth.php';

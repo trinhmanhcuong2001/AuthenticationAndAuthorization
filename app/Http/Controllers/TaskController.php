@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class TaskController extends Controller
 {
+
     public function index()
     {
-        $this->authorize("viewAny", Task::class);
+        $this->authorize('is-admin', Task::class);
 
         $tasks = Task::all();
 
@@ -21,13 +23,15 @@ class TaskController extends Controller
 
     public function create()
     {
-        $this->authorize('create', Task::class);
+        if (!Gate::allows("is-admin")) {
+            abort(403, 'Unauthorized');
+        }
         return view('tasks.create');
     }
 
     public function store(Request $request)
     {
-        $this->authorize('store', Task::class);
+        $this->authorize('is-admin', Task::class);
         $data = $request->all();
 
         $data['user_id'] = Auth::id();
@@ -38,8 +42,9 @@ class TaskController extends Controller
 
     public function edit(Task $task)
     {
-        $this->authorize('edit', arguments: $task);
-
+        if (!Gate::allows("is-admin")) {
+            abort(403, 'Unauthorized');
+        }
         return view('tasks.edit', [
             'task' => $task,
         ]);
@@ -47,7 +52,7 @@ class TaskController extends Controller
 
     public function update(Request $request, Task $task)
     {
-        $this->authorize('update', $task);
+        $this->authorize('is-admin', Task::class);
 
         $data = $request->all();
         $task->update($data);
@@ -59,8 +64,7 @@ class TaskController extends Controller
 
     public function destroy(Task $task)
     {
-        $this->authorize('delete', $task);
-
+        $this->authorize('is-admin', Task::class);
         $task->delete();
         session()->flash('success', 'Xóa công việc thành công!');
         return redirect()->route('task.index');

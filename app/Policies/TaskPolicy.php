@@ -15,34 +15,8 @@ class TaskPolicy
         //
     }
 
-    public function viewAny(User $user)
+    public function checkAdmin(User $user)
     {
-        return true;
-    }
-
-    public function create(User $user)
-    {
-        return true;
-    }
-
-    public function store(User $user)
-    {
-        return true;
-    }
-
-    public function edit(User $user, Task $task)
-    {
-        return true;
-    }
-
-    public function update(User $user, Task $task)
-    {
-        return true;
-    }
-
-
-    public function delete(User $user, Task $task)
-    {
-        return true;
+        return $user->role == 'admin';
     }
 }
