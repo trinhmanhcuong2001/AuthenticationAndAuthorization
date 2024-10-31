@@ -10,8 +10,27 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     {{ __("You're logged in!") }}
+
+                    <div class="py-12">
+                        <ul>
+                            @can('create', \App\Models\Post::class)
+                                <li class="p-6 "><a class="text-primary" href="{{ route('post.create') }}">Tạo một bài
+                                        đăng</a></li>
+                            @endcan
+                            <li class="p-6 "><a class="text-primary" href="{{ route('post.index') }}">Danh sách bài
+                                    đăng</a></li>
+                        </ul>
+                    </div>
+
+
+
                 </div>
             </div>
         </div>
     </div>
+    {{-- <script>
+        $(document).ready(function() {
+            $('#mltislct').multiselect();
+        });
+    </script> --}}
 </x-app-layout>
